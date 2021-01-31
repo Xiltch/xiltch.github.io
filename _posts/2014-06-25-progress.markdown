@@ -1,0 +1,28 @@
+---
+layout: post
+title: Progress?
+date: 2014-06-25 18:51:40.000000000 +01:00
+type: post
+parent_id: '0'
+published: true
+password: ''
+status: publish
+categories:
+- General
+- Programming
+tags:
+- Thoughts
+author: Jonathan Tweedle
+permalink: "/2014/06/25/progress/"
+---
+So I recently had the opportunity to measure the quality of junior developers. What I was shocked is the level of skill out there.
+
+My theory is that programmers have garnered the same aspiration of doctors, scientists, pilots, etc.
+
+The market is flooded by the glory seekers, looking to get some of the lime light.
+
+You either love code or you love money, which results in some trying to be programmers but cannot code. Something a fizzbuzz style test can help you discover.
+
+If you love code then you love to talk about it, I am yet to find a true code lover that cannot contain themselves. Given the chance they will spend hours trying to explain something they worked on to anyone who appears interested.
+
+I also need to remind myself that we all had to start somewhere but there is also the realization that no matter how hard one tries, a pig cannot bark.
