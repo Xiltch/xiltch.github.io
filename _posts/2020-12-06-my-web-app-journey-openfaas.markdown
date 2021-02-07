@@ -19,7 +19,7 @@ permalink: "/2020/12/06/my-web-app-journey-openfaas/"
 ---
 I feel like this is more of a step backwards. I mean in the [last post][previous_post] I was starting to build some interfaces and about to start with the persistance layer.
 
-I purchased the <a href="https://www.khadas.com/vim3l">Khadas Vim3L</a> in  the hopes of building an HTPC for my wife but sadly it did not work with the streaming media sites due to DRM issues. The device is basically a nice powerful Raspberry Pi with an added NPU which could be used for some machine learning down the line. So i decided to repurposed the device in order to try my hand at using <a href="https://www.openfaas.com/">OpenFaaS</a>, which is basically a technology that provides AWS locally.
+I purchased the <a href="https://www.khadas.com/vim3l">Khadas Vim3L</a> in  the hopes of building an HTPC for my wife but sadly it did not work with the streaming media sites due to DRM issues. The device is basically a nice powerful Raspberry Pi with an added NPU which could be used for some machine learning down the line. So I repurposed the device in order to try my hand at using <a href="https://www.openfaas.com/">OpenFaaS</a>, which is basically a technology that provides AWS locally.
 
 So this post will be about the rocky road i took to get it running which took me a little longer than 15 minutes.
 
