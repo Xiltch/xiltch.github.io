@@ -220,11 +220,14 @@ docker exec 11740c0f2585 update-ca-certificates
 docker restart 11740c0f2585
 ```
 
-Now you should be able to publish your functions which should 
+Now you should be able to publish your functions and then deploy it your OpenFaaS server.
 
 ```
 faas-cli publish -f node-functions.yml --platforms linux/arm64,linux/arm/7 --no-cache
+faas-cli deploy -f node-functions.yml
 ```
+
+Hopefully everything went as planned and you can then test your function either using the `faas-cli` or through the dashboard.
 
 ### Contributing Research Material
 
