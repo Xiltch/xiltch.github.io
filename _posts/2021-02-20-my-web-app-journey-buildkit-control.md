@@ -12,6 +12,7 @@ tags:
 - My Web App Journey
 - Docker
 - OpenFaaS
+permalink: "/2021/02/20/my-web-app-journey-buildkit-control/"
 ---
 
 ![banner][banner]
