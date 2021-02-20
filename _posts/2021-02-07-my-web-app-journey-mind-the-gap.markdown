@@ -185,6 +185,8 @@ docker login docker-registry.home.lan:5000
 
 ### OpenFaaS BuildKit
 
+__Update 2021-02-20__: [I refined the process for setting up the buildkit][post_buildkit]
+
 So you have your OpenFaaS server running and while you were able to deploy the sample function that was already pre-compiled to target the Arm 64 architecture, chances are that you are using a x86 platform to write and build your functions on. For this reason you will end up relying on a BuildKit that will help build images that target the ARM architecture. The downside is the buildkit does not trust your CA so will fail to deploy to your docker registry.
 
 The solution I found was to attempt the build process and fail. Once the buildkit container is provisioned, start it and copy my CA over to it. Restart the buildkit and it should now trust our private CA and thus will not fail during the build process.
@@ -246,3 +248,4 @@ Hopefully everything went as planned and you can then test your function either 
 [man_htpasswd]: https://httpd.apache.org/docs/2.4/programs/htpasswd.html
 [ellis_guide]: https://alexellisuk.medium.com/walk-through-install-kubernetes-to-your-raspberry-pi-in-15-minutes-84a8492dc95a
 [prev_post]: {% post_url 2020-12-06-my-web-app-journey-openfaas %}
+[post_buildkit]: {% post_url 2021-02-20-my-web-app-journey-buildkit-control %}
