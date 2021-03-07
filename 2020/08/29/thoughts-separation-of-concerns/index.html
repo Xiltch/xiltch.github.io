@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Thoughts - Seperation of Concerns | My Perspective of the world</title>
+<meta name="generator" content="Jekyll v4.2.0" />
+<meta property="og:title" content="Thoughts - Seperation of Concerns" />
+<meta name="author" content="Jonathan Tweedle" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="My current workday efforts revolve around a Java based solution. I have been working on refactoring the design that was edging towards something more monolithic in its design to break it up in smaller, easier to maintain packages." />
+<meta property="og:description" content="My current workday efforts revolve around a Java based solution. I have been working on refactoring the design that was edging towards something more monolithic in its design to break it up in smaller, easier to maintain packages." />
+<link rel="canonical" href="https://xiltch.github.io/2020/08/29/thoughts-separation-of-concerns/" />
+<meta property="og:url" content="https://xiltch.github.io/2020/08/29/thoughts-separation-of-concerns/" />
+<meta property="og:site_name" content="My Perspective of the world" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-08-29T16:57:50+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Thoughts - Seperation of Concerns" />
+<script type="application/ld+json">
+{"description":"My current workday efforts revolve around a Java based solution. I have been working on refactoring the design that was edging towards something more monolithic in its design to break it up in smaller, easier to maintain packages.","headline":"Thoughts - Seperation of Concerns","url":"https://xiltch.github.io/2020/08/29/thoughts-separation-of-concerns/","datePublished":"2020-08-29T16:57:50+00:00","dateModified":"2020-08-29T16:57:50+00:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://xiltch.github.io/2020/08/29/thoughts-separation-of-concerns/"},"author":{"@type":"Person","name":"Jonathan Tweedle"},"@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="https://xiltch.github.io/feed.xml" title="My Perspective of the world" /><!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XPPPBC54MV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-XPPPBC54MV');
+</script></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">My Perspective of the world</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a><a class="page-link" href="/links/">Links</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Thoughts - Seperation of Concerns</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2020-08-29T16:57:50+00:00" itemprop="datePublished">Aug 29, 2020
+      </time>• <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span class="p-author h-card" itemprop="name">Jonathan Tweedle</span></span></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>My current workday efforts revolve around a Java based solution. I have been working on refactoring the design that was edging towards something more monolithic in its design to break it up in smaller, easier to maintain packages.</p>
+
+<p>One of the issues was how most of the logic was boxed into a single class. The problem was how the creating of the object relied on being provided another class object, with direct interaction to the private fields. Normally this is not a problem, but I was looking to decompose into multiple class objects. When you have a lot of business logic to work with, this can become time consuming. The goal being to migrate into a POJO (Plain Old Java Object) with no business logic on how to populate the fields, and to push the business logic into a Factory class which knows how to digest any input data in order to create the desired output.</p>
+
+<p>I was looking into the pro’s and con’s of using the classic Java Getter/Setter method. Some good arguments was how syntactically speaking, the Getter/Setter pretty much does the same thing as declaring a public field which can be accessed easily. Consider the below two examples. They are both basically the same with Example A being a little easier to code and use. It will still work with basic Serialization/Deserialization methods … so why go to the effort of adding more layers of code on top?</p>
+
+<p><strong>Example A</strong></p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="nc">String</span> <span class="n">bar</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Example B</strong></p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+  <span class="kd">private</span> <span class="nc">String</span> <span class="n">bar</span>
+  <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getBar</span><span class="o">()</span> <span class="o">{</span> <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">bar</span><span class="o">;</span> <span class="o">}</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setBar</span><span class="o">(</span><span class="nc">String</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span> <span class="k">this</span><span class="o">.</span><span class="na">bar</span> <span class="o">=</span> <span class="n">value</span><span class="o">;</span> <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>One benefit of Example B is the ability to limit access to the field. Like making the field read-only. If you choose to keep the business logic in the class, using the getters and setters to reference the internal fields. This has the benefit if you need to change some logic regarding a field such as making sure a string value matches a desired pattern. With Example A, you need to update the logic in each location to make sure the logic is universally applied which because challenging the bigger the design is. With example B, you simply need to update your logic in either the getter or setter giving a single point to manage the logic.</p>
+
+<p>In terms of serialization/deserialization such as with Jackson (json) you have multiple options on hand. The easiest is to tag the class which can inspect the class to leverage any public fields or getters and setters. The getters ans setters add additional benefits to create unidirectional (de)serialization if needed. You can also tag the getters and setter independently or specify custom serialization on a per field basis. The next option is write a custom serializer but that can be more involved and worse is when you need to update the class to add new fields. Adding fields requires updating your custom serializers.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>Separation of concerns by spreading the code design around does mean more code and that can also take additional time. This might sound like something you wouldn’t want to do if your under pressure. The benefit is making the solution more flexible to changes which sometimes requires redesigning half your solution. Separating the different concerns of your solution by ensuring there is not a lot of tightly coupled components might take a little more time initially but the long term time savings are worth it. The other benefit is each component being easier to test which is crucial when you make changes to ensure you don’t break something by mistake.</p>
+
+  </div><a class="u-url" href="/2020/08/29/thoughts-separation-of-concerns/" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">My Perspective of the world</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">My Perspective of the world</li><li><a class="u-email" href="mailto:xiltch@gmail.com">xiltch@gmail.com</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/xiltch"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">xiltch</span></a></li><li><a href="https://www.twitter.com/xiltch"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">xiltch</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>The chronicles of a geek, author of code and connoisseur of fine electronics.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

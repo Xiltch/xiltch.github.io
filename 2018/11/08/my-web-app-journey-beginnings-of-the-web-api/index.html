@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>My Web App Journey - Beginnings of the Web API | My Perspective of the world</title>
+<meta name="generator" content="Jekyll v4.2.0" />
+<meta property="og:title" content="My Web App Journey - Beginnings of the Web API" />
+<meta name="author" content="Jonathan Tweedle" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="In the previous chapter I got my development environment ready to start the development process. In this chapter I start working on the Web API." />
+<meta property="og:description" content="In the previous chapter I got my development environment ready to start the development process. In this chapter I start working on the Web API." />
+<link rel="canonical" href="https://xiltch.github.io/2018/11/08/my-web-app-journey-beginnings-of-the-web-api/" />
+<meta property="og:url" content="https://xiltch.github.io/2018/11/08/my-web-app-journey-beginnings-of-the-web-api/" />
+<meta property="og:site_name" content="My Perspective of the world" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2018-11-08T09:40:38+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="My Web App Journey - Beginnings of the Web API" />
+<script type="application/ld+json">
+{"description":"In the previous chapter I got my development environment ready to start the development process. In this chapter I start working on the Web API.","headline":"My Web App Journey - Beginnings of the Web API","url":"https://xiltch.github.io/2018/11/08/my-web-app-journey-beginnings-of-the-web-api/","datePublished":"2018-11-08T09:40:38+00:00","dateModified":"2018-11-08T09:40:38+00:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://xiltch.github.io/2018/11/08/my-web-app-journey-beginnings-of-the-web-api/"},"author":{"@type":"Person","name":"Jonathan Tweedle"},"@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="https://xiltch.github.io/feed.xml" title="My Perspective of the world" /><!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XPPPBC54MV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-XPPPBC54MV');
+</script></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">My Perspective of the world</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a><a class="page-link" href="/links/">Links</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">My Web App Journey - Beginnings of the Web API</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2018-11-08T09:40:38+00:00" itemprop="datePublished">Nov 8, 2018
+      </time>• <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span class="p-author h-card" itemprop="name">Jonathan Tweedle</span></span></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>In the <a href="/2018/11/02/my-web-app-journey-preparation/">previous chapter</a> I got my development environment ready to start the development process. In this chapter I start working on the Web API.</p>
+
+<p>The purpose of the Web API is provide a standardize method for interacting with the data used by Web App. This is not just limited to just Web App’s but can also be used in desktop applications or services that have a need to interact with data in different ways.</p>
+
+<p>While you could directly connect to say a SQL database, if your design runs into scaling issues and you decide to change over to a NoSQL based data store it would require rewriting a lot of your code to wire in new changes. If you have multiple applications using the same data source this means having to update each of them. By adding the API layer you can safely switch out your underlying data store without impacting the rest of your stack.</p>
+
+<h2 id="starting-a-new-project">Starting a new project</h2>
+
+<p>So to recap in the previous chapter we first had to create a new git repos, I did this by logging into my Raspberry Pi and created a directory for my project and initialized it as a bare git repository.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd /repos
+mkdir Midas
+cd /repos/Midas
+git init --bare
+</code></pre></div></div>
+
+<p>On my Windows system I open up the Git Bash prompt and navigate to my local workspace folder (a general folder to house multiple projects) and clone my new empty project.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd /c/workspace/
+git clone ssh://git@192.168.0.30/repos/Midas
+</code></pre></div></div>
+
+<p>Now it is pretty lonely in there so before we go about adding stuff the first thing i want is to add a “.gitignore” file to the project. This file tells git to ignore files that match the pattern from being committed into the repository, this helps to keep the repository lean and free of junk such as compiled output and downloaded libraries.</p>
+
+<p>If you are using VS Code, you can shortcut straight from the git bash console you already have open.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd Midas
+code .gitignore
+</code></pre></div></div>
+
+<p>Now using your text editor of choice add the following and save the file.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>node_modules/
+package-lock.json
+dist/
+</code></pre></div></div>
+
+<p>You can now go ahead and commit the changes to your git repository.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git add .
+git commit -m 'created ignore file'
+git push origin master
+</code></pre></div></div>
+
+<p>Going forward I will assume that you are committing your code into your repository after changes.</p>
+
+<h2 id="initializing-the-nodejs-project">Initializing the Node.js Project</h2>
+
+<p>Lets now get the project started and initialize our Node.js project in our somewhat empty project directory.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm init
+</code></pre></div></div>
+
+<p>Hopefully you have node installed and it will kick of the wizard. You will need to give your project name (I called mine ‘midas’). You will also need to give it a version number, a description, etc …</p>
+
+<p>I stuck to the defaults except for the description but the defaults are fine for now. Once done and you accept, it will generate the package.json file. We are going to update this file over time to either directly or through npm commands as the project evolves.</p>
+
+<p>Time to add some dependencies to our project, the following commands will download the require libraries and update the package.json file.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm install express
+npm install nodemon --save-dev
+npm install typescript --save-dev
+npm install @types/node --save-dev
+npm install @types/express --save-dev
+npm install @types/body-parser --save-dev
+</code></pre></div></div>
+
+<p>So because I have now declared my intent to use typescript … i need to configure the project to use it. The quickest way I currently know is to create a ‘tsconfig.json’ in the root directory of the project, with the following contents:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"compileOnSave"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"compilerOptions"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"target"</span><span class="p">:</span><span class="w"> </span><span class="s2">"es6"</span><span class="p">,</span><span class="w">     </span><span class="err">//default</span><span class="w"> </span><span class="err">is</span><span class="w"> </span><span class="err">es</span><span class="mi">5</span><span class="w">
+      </span><span class="nl">"module"</span><span class="p">:</span><span class="w"> </span><span class="s2">"commonjs"</span><span class="p">,</span><span class="err">//CommonJs</span><span class="w"> </span><span class="err">style</span><span class="w"> </span><span class="err">module</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="err">output</span><span class="w">
+      </span><span class="nl">"outDir"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dist"</span><span class="w">  </span><span class="p">,</span><span class="w">   </span><span class="err">//change</span><span class="w"> </span><span class="err">the</span><span class="w"> </span><span class="err">output</span><span class="w"> </span><span class="err">directory</span><span class="w">
+      </span><span class="nl">"resolveJsonModule"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="err">//to</span><span class="w"> </span><span class="err">import</span><span class="w"> </span><span class="err">out</span><span class="w"> </span><span class="err">json</span><span class="w"> </span><span class="err">database</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"include"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="s2">"src/**/*.ts"</span><span class="w">       </span><span class="err">//which</span><span class="w"> </span><span class="err">kind</span><span class="w"> </span><span class="err">of</span><span class="w"> </span><span class="err">files</span><span class="w"> </span><span class="err">to</span><span class="w"> </span><span class="err">compile</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="nl">"exclude"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="s2">"node_modules"</span><span class="w">     </span><span class="err">//which</span><span class="w"> </span><span class="err">files</span><span class="w"> </span><span class="err">or</span><span class="w"> </span><span class="err">directories</span><span class="w"> </span><span class="err">to</span><span class="w"> </span><span class="err">ignore</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+ </span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>This instructs the typescript compiler (tsc) how to handle compiling typescript into javascript. If you have not yet installed typescript just run the following.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm install -g typescript
+</code></pre></div></div>
+
+<p>You might have also noticed I told the compiler to include all typescript files (*.ts) located under the “src” directory so lets go ahead create the directory in the root directory. So we should now have the following structure.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/
+|-- .git/
+|-- node_modules/
+|-- src/
+|-- .gitignore
+|-- package.json
+|-- package-lock.json
+|-- tsconfig.json
+</code></pre></div></div>
+
+<p>The structure is going to evolve over time as the application evolves and while you could treat these as individual projects, my goal is to house them together in one repository.</p>
+
+<h2 id="hello-world">Hello World</h2>
+
+<p>Now on to the meat of the API and what better way than to start with a simple “Hello World” to make sure the environment is working correctly</p>
+
+<p>Lets start by creating “server.ts” under the “src/” directory, and adding some simple code.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>console.log("Hello World");
+</code></pre></div></div>
+
+<p>At this point you should be able to compile your typescript and test it works by executing the following in the root of the project directory.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tsc
+node dist/server.js
+</code></pre></div></div>
+
+<p>While this works, lets be lazy and setup some scripts to automate some things. We do this in the “package.json” file located in the root of the project.</p>
+
+<p>Look for the line ‘ “main”: “index.js” and change it to the following.</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">"main"</span><span class="p">:</span><span class="w"> </span><span class="s2">"./dist/server.js"</span><span class="w">
+</span></code></pre></div></div>
+
+<p>You should should also find a scripts section that we update with some scripts which will trigger the typescript compiler to take our “.ts” files and convert them into the ‘.js” files in the “dist/” directory before starting our simple application.</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">"scripts"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="nl">"build"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"tsc"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"prestart"</span><span class="p">:</span><span class="w"> </span><span class="s2">"npm run build"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"start"</span><span class="p">:</span><span class="w"> </span><span class="s2">"node ./dist/server.js"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Now you can do it all with one simple command.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm start
+</code></pre></div></div>
+
+<p>If all is working well, you should see the compiler run followed by the expected output of “Hello World”. Now instead of sending it to the console, we want to send it to a browser in response to web request So lets update the “server.ts” file to the following.</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="o">*</span> <span class="k">as</span> <span class="nx">express</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">express</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">PORT</span> <span class="o">=</span> <span class="mi">3000</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">HOST</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">localhost</span><span class="dl">'</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">app</span><span class="p">:</span> <span class="nx">express</span><span class="p">.</span><span class="nx">Application</span><span class="p">;</span>
+
+<span class="nx">app</span> <span class="o">=</span> <span class="nx">express</span><span class="p">();</span>
+
+<span class="nx">app</span><span class="p">.</span><span class="kd">get</span><span class="p">(</span><span class="dl">'</span><span class="s1">/</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">client connected</span><span class="dl">'</span><span class="p">);</span>
+  <span class="nx">res</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="dl">'</span><span class="s1">Hello World</span><span class="dl">'</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="nx">app</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="nx">PORT</span><span class="p">,</span> <span class="nx">HOST</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">listening on port </span><span class="dl">'</span> <span class="o">+</span> <span class="nx">PORT</span><span class="p">);</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<p>Once it has updated run “npm start” and when you see the server is listening, navigate to <a href="http://127.0.0.1:3000/">http://127.0.0.1:3000/</a> and you should get a response of “Hello World” and in your console you should see a message that a client connected.</p>
+
+<p>In the <a href="/2018/11/09/my-web-app-journey-wep-api-routing/">next chapter</a>, I will refactor the solution to abstract the design with routing and controllers to manage requests.</p>
+
+
+  </div><a class="u-url" href="/2018/11/08/my-web-app-journey-beginnings-of-the-web-api/" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">My Perspective of the world</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">My Perspective of the world</li><li><a class="u-email" href="mailto:xiltch@gmail.com">xiltch@gmail.com</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/xiltch"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">xiltch</span></a></li><li><a href="https://www.twitter.com/xiltch"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">xiltch</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>The chronicles of a geek, author of code and connoisseur of fine electronics.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

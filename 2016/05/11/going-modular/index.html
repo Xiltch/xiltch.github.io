@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Going Modular | My Perspective of the world</title>
+<meta name="generator" content="Jekyll v4.2.0" />
+<meta property="og:title" content="Going Modular" />
+<meta name="author" content="Jonathan Tweedle" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="So we have all played with Lego or at the least know about it. The idea is to provide a platform where anything can be built using the base building blocks. Now take that approach to a system solution…" />
+<meta property="og:description" content="So we have all played with Lego or at the least know about it. The idea is to provide a platform where anything can be built using the base building blocks. Now take that approach to a system solution…" />
+<link rel="canonical" href="https://xiltch.github.io/2016/05/11/going-modular/" />
+<meta property="og:url" content="https://xiltch.github.io/2016/05/11/going-modular/" />
+<meta property="og:site_name" content="My Perspective of the world" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2016-05-11T15:07:46+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Going Modular" />
+<script type="application/ld+json">
+{"description":"So we have all played with Lego or at the least know about it. The idea is to provide a platform where anything can be built using the base building blocks. Now take that approach to a system solution…","headline":"Going Modular","url":"https://xiltch.github.io/2016/05/11/going-modular/","datePublished":"2016-05-11T15:07:46+00:00","dateModified":"2016-05-11T15:07:46+00:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://xiltch.github.io/2016/05/11/going-modular/"},"author":{"@type":"Person","name":"Jonathan Tweedle"},"@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="https://xiltch.github.io/feed.xml" title="My Perspective of the world" /><!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XPPPBC54MV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-XPPPBC54MV');
+</script></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">My Perspective of the world</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a><a class="page-link" href="/links/">Links</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Going Modular</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2016-05-11T15:07:46+00:00" itemprop="datePublished">May 11, 2016
+      </time>• <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span class="p-author h-card" itemprop="name">Jonathan Tweedle</span></span></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>So we have all played with Lego or at the least know about it. The idea is to provide a platform where anything can be built using the base building blocks. Now take that approach to a system solution…</p>
+
+<p>This is where modular (or plugin based) systems come in. The idea being is to build out contained modules with the intention of connecting together in order to build out a full solution.</p>
+
+<p>Some might ask why go through the hassle when you can hard code everything together avoiding the processing overhead cost?</p>
+
+<p>Well much like 3D printing a specific toy, once built it is not so easy to break down and build something else like you can do with Lego.</p>
+
+<p>The beauty with computers is the ability to clone files with a simple copy command. If you have something modular then you can copy-paste your modules, update config files and you have a new working system.</p>
+
+<p>The key I have found to making this work is a solid host platform to build up from. Now it might seem tempting to include a bunch of nice features in that host but don’t. The host must only focus on the core functionality.</p>
+
+<p>Let’s say your solution needs remote connectivity, If this was built directly into your host system and there was a bug in the code, once fixed you need to bring down the whole system to implement the fix. If this was modular then all that is needed is to reload that one module.</p>
+
+<p>So the main host should focus on the following aspects to manage the system:</p>
+
+<ul>
+  <li>Loading / Unloading modules</li>
+  <li>Sending / Receiving payloads</li>
+</ul>
+
+<p>The core behind the whole design is the payloads, a strongly typed message that the host defines and all plugins understand. It needs to identify what type of payload it is, where it is from and where it is going to. And then of course the contents of that payload.</p>
+
+<p>Establish a basic set of payload types to allow low level routing. The payload type helps identify how either the host or a module should handle that payload without the need to process the contents. Basically the host is playing hot potato with those payloads and needs to avoid thread locks. It should avoid decoding the entire payload to ensure the system remains responsive to all modules. It should be unforgiving and never try to self heal a running module. The goal is let the modules running on separate threads do the heavy lifting.</p>
+
+<p>Having a basic command type payload is key as well so that a module can directly control the host platform such as instructing the host to load a new module, change basic host settings, etc.</p>
+
+<p>The next important part is the routing of payloads. Because the modules are doing the heavy lifting it makes sense to provide the ability for modules to communicate with each other through the host platform. The host needs to know who to send the received payload to while the receiver needs to know who sent it if a response is expected. Again like the payload type, you need to avoid decoding the whole payload.</p>
+
+<p>Next is the ability to handle non targeted payloads or broadcasting, however there should be two varying types of broadcasting used. The first being where the payload is intentionally sent to all modules. This should be reserved only to your host and it’s user limited to critical messages such as informing all plugins the system is being shut down in order to allow them to safely terminate without losing any data.</p>
+
+<p>The second is more of a subscriber based model. The message is sent out to any plugin that had chosen to receive that style of payload. An example of this would be a logging system. All plugins can send a log payload to the host and then various logging plugins could subscribe in order to receive and consume those payloads. Some plugins would simply commit those logs to some form of storage medium where others could send emails based on triggers.</p>
+
+<p>Ultimately the challenge is to ensure you cover all the foreseeable cases to mitigate any need to make changes to the host system. Remember that any change to the host could mean changes to all of the plugins as well so don’t over complicate the host.</p>
+
+
+  </div><a class="u-url" href="/2016/05/11/going-modular/" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">My Perspective of the world</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">My Perspective of the world</li><li><a class="u-email" href="mailto:xiltch@gmail.com">xiltch@gmail.com</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/xiltch"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">xiltch</span></a></li><li><a href="https://www.twitter.com/xiltch"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">xiltch</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>The chronicles of a geek, author of code and connoisseur of fine electronics.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

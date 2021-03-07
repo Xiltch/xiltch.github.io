@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>My Web App Journey - Going Solid | My Perspective of the world</title>
+<meta name="generator" content="Jekyll v4.2.0" />
+<meta property="og:title" content="My Web App Journey - Going Solid" />
+<meta name="author" content="Jonathan Tweedle" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="In the previous chapter I made some progress in the design of the controller to handle the basic CRUD operations for a transaction." />
+<meta property="og:description" content="In the previous chapter I made some progress in the design of the controller to handle the basic CRUD operations for a transaction." />
+<link rel="canonical" href="https://xiltch.github.io/2019/01/27/my-web-journey-data-repository/" />
+<meta property="og:url" content="https://xiltch.github.io/2019/01/27/my-web-journey-data-repository/" />
+<meta property="og:site_name" content="My Perspective of the world" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-01-27T09:35:50+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="My Web App Journey - Going Solid" />
+<script type="application/ld+json">
+{"description":"In the previous chapter I made some progress in the design of the controller to handle the basic CRUD operations for a transaction.","headline":"My Web App Journey - Going Solid","url":"https://xiltch.github.io/2019/01/27/my-web-journey-data-repository/","datePublished":"2019-01-27T09:35:50+00:00","dateModified":"2019-01-27T09:35:50+00:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://xiltch.github.io/2019/01/27/my-web-journey-data-repository/"},"author":{"@type":"Person","name":"Jonathan Tweedle"},"@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="https://xiltch.github.io/feed.xml" title="My Perspective of the world" /><!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XPPPBC54MV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-XPPPBC54MV');
+</script></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">My Perspective of the world</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a><a class="page-link" href="/links/">Links</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">My Web App Journey - Going Solid</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2019-01-27T09:35:50+00:00" itemprop="datePublished">Jan 27, 2019
+      </time>• <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span class="p-author h-card" itemprop="name">Jonathan Tweedle</span></span></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>In the <a href="/2018/12/04/my-web-app-journey-controllers/">previous chapter</a> I made some progress in the design of the controller to handle the basic CRUD operations for a transaction.</p>
+
+<p>The project will grow to include more controllers but right now the transaction controller is lacking data persistence. Now I could design the controller to just connect directly to a database of my choice (such as MongoDB) however I would prefer using the repository pattern to abstract the data implementation.</p>
+
+<p>I also plan on shifting my approach in the direction of Domain Driven Design (DDD) with some SOLID principles. So this chapter will be a detour before adding MongoDB support.</p>
+
+<h2 id="becoming-independent">Becoming Independent</h2>
+
+<p>I have recently been looking at content on dependency injection and dependency inversion. The goal is to further decouple the design and abstract the design. So I want to have the concept of a repository and my application to make use of this generic notion but never actually instantiating an instance but instead have it “injected” in wherever it is needed.</p>
+
+<p>I plan to rely mainly on Inversion, to avoid concretions that tightly couple the design of one aspect to another. Of course there is still a need at some point where the concretions need to be defined and mapped together to make the application work. This will be made possible using the <a href="https://github.com/inversify/InversifyJS">Inversify</a> module. (It also means this post is going to be a long one).</p>
+
+<p><em>I decided to rely mainly on Inversion, to avoid concretions that tightly couple the design of one aspect to another. Of course there is still a need at some point where the concretions need to be defined and mapped together to make the application work. This will be made possible using the Inversify module.</em></p>
+
+<p>Install it by running the command in the root of the project</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm install inversify reflect-metadata --save
+</code></pre></div></div>
+
+<p>Inversify relies on some black magic to make the injection possible which is not enabled by default. You need to inform the typescript compiler to enable the use of experimental decorators and to include the types from the reflect-metadata module. This gives us the following:</p>
+
+<h4 id="tsconfigjson">/tsconfig.json</h4>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"compileOnSave"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"compilerOptions"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"experimentalDecorators"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"emitDecoratorMetadata"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"moduleResolution"</span><span class="p">:</span><span class="w"> </span><span class="s2">"node"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"types"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"reflect-metadata"</span><span class="p">],</span><span class="w">
+      </span><span class="nl">"target"</span><span class="p">:</span><span class="w"> </span><span class="s2">"es6"</span><span class="p">,</span><span class="w">     </span><span class="err">//default</span><span class="w"> </span><span class="err">is</span><span class="w"> </span><span class="err">es</span><span class="mi">5</span><span class="w">
+      </span><span class="nl">"module"</span><span class="p">:</span><span class="w"> </span><span class="s2">"commonjs"</span><span class="p">,</span><span class="err">//CommonJs</span><span class="w"> </span><span class="err">style</span><span class="w"> </span><span class="err">module</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="err">output</span><span class="w">
+      </span><span class="nl">"outDir"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dist"</span><span class="w">  </span><span class="p">,</span><span class="w">   </span><span class="err">//change</span><span class="w"> </span><span class="err">the</span><span class="w"> </span><span class="err">output</span><span class="w"> </span><span class="err">directory</span><span class="w">
+      </span><span class="nl">"resolveJsonModule"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="err">//to</span><span class="w"> </span><span class="err">import</span><span class="w"> </span><span class="err">out</span><span class="w"> </span><span class="err">json</span><span class="w"> </span><span class="err">database</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"include"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="s2">"src/**/*.ts"</span><span class="w">       </span><span class="err">//which</span><span class="w"> </span><span class="err">kind</span><span class="w"> </span><span class="err">of</span><span class="w"> </span><span class="err">files</span><span class="w"> </span><span class="err">to</span><span class="w"> </span><span class="err">compile</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="nl">"exclude"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="s2">"node_modules"</span><span class="w">     </span><span class="err">//which</span><span class="w"> </span><span class="err">files</span><span class="w"> </span><span class="err">or</span><span class="w"> </span><span class="err">directories</span><span class="w"> </span><span class="err">to</span><span class="w"> </span><span class="err">ignore</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+ </span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>With that out of the way I can focus on making my dream come true. As mentioned earlier the concretions get managed from a single point in the project.</p>
+
+<h2 id="tidying-up">Tidying up</h2>
+
+<p>There are a few changes I need to make to the project t along with the use of templates to help generalize the design. Rather than relying on concretions, I first need to define an interface to describe how to interact with a repository for the transactions. I could create a new file for the interface but chose to append it to the existing model for the transaction as it is technically tightly coupled to the design of a transaction. I included some <a href="http://typedoc.org/guides/doccomments/">TypeDoc</a> comments to improve the documentation in the intellisense to know the expected behavior any repository implementing the interface will honor.</p>
+
+<p><em>To make it possible, I need to make use of templates to help generalize the design. So rather than relying on concretions, I first need to define an interface to describe how to interact with a repository for the transactions. I could create a new file for the interface but chose to append it to the existing model for the transaction as it is technically tightly coupled to the design of a transaction. I included some TypeDoc comments to track this.</em></p>
+
+<h4 id="srcmodelstransactionts">/src/models/transaction.ts</h4>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">export</span> <span class="kd">class</span> <span class="nx">Transaction</span> <span class="p">{</span>
+  <span class="nl">id</span><span class="p">:</span> <span class="kr">number</span><span class="p">;</span>
+  <span class="nl">amount</span><span class="p">:</span> <span class="kr">number</span><span class="p">;</span>
+  <span class="nl">currency</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+  <span class="nl">date</span><span class="p">:</span> <span class="nb">Date</span><span class="p">;</span>
+  <span class="nl">description</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+  <span class="nl">source</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+  <span class="nl">type</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+  <span class="nl">category</span><span class="p">?:</span> <span class="kr">string</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">export</span> <span class="kr">interface</span> <span class="nx">TransactionRepository</span> <span class="p">{</span>
+  <span class="cm">/** finds the first matching Transaction in the repository
+   * @returns transaction. null if not found
+   */</span>
+  <span class="nx">find</span><span class="p">(</span><span class="nx">filter</span><span class="p">:</span> <span class="p">(</span><span class="nx">Transaction</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">boolean</span><span class="p">):</span> <span class="nx">Transaction</span><span class="p">;</span>
+  <span class="cm">/** add a new transaction to the repository
+   * @returns transaction. null if it failed to add
+   */</span>
+  <span class="nx">add</span><span class="p">(</span><span class="nx">record</span><span class="p">:</span> <span class="nx">Transaction</span><span class="p">):</span> <span class="nx">Transaction</span><span class="p">;</span>
+  <span class="cm">/** updates a transaction in the repository
+   * @returns transaction. null if unsuccessful */</span>
+  <span class="nx">update</span><span class="p">(</span><span class="nx">record</span><span class="p">:</span> <span class="nx">Transaction</span><span class="p">):</span> <span class="nx">Transaction</span><span class="p">;</span>
+  <span class="cm">/** removes a record from the repository
+   * @returns transaction. null if unsuccessful */</span>
+  <span class="nx">remove</span><span class="p">(</span><span class="nx">filter</span><span class="p">:</span> <span class="p">(</span><span class="nx">Transaction</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">boolean</span><span class="p">):</span> <span class="nx">Transaction</span><span class="p">;</span>
+  <span class="cm">/** finds all the matching transactions in the repository
+   * @returns array of transaction. null if nothing found
+   */</span>
+  <span class="nx">findAll</span><span class="p">(</span><span class="nx">filter</span><span class="p">:</span> <span class="p">(</span><span class="nx">Transaction</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">boolean</span><span class="p">):</span> <span class="nb">Array</span><span class="o">&lt;</span><span class="nx">Transaction</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>From there I need to define some symbols that will be used for handling the dependency injection. These will later provide the means to manage the binding to the instances that will be injected when the application is running.</p>
+
+<h4 id="srctypests">/src/types.ts</h4>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">export</span> <span class="kd">const</span> <span class="nx">REPOSITORY_TYPES</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">Transaction</span><span class="p">:</span> <span class="nb">Symbol</span><span class="p">.</span><span class="k">for</span><span class="p">(</span><span class="dl">'</span><span class="s1">Transactions</span><span class="dl">'</span><span class="p">)</span>
+<span class="p">};</span>
+
+<span class="k">export</span> <span class="kd">const</span> <span class="nx">CONTROLLERS</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">Transaction</span><span class="p">:</span> <span class="nb">Symbol</span><span class="p">.</span><span class="k">for</span><span class="p">(</span><span class="dl">'</span><span class="s1">Transaction</span><span class="dl">'</span><span class="p">)</span>
+<span class="p">};</span>
+
+<span class="k">export</span> <span class="kd">const</span> <span class="nx">SINGLETONS</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">Routing</span><span class="p">:</span> <span class="nb">Symbol</span><span class="p">.</span><span class="k">for</span><span class="p">(</span><span class="dl">'</span><span class="s1">Routing</span><span class="dl">'</span><span class="p">)</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>I now need to update the controller to move the data array out and replace  it with an injected repository. I also need to encapsulate it into a class which will allow the controller be instantiated at run time as it gets injected.</p>
+
+<h4 id="srccontrollerstransactionts">/src/controllers/transaction.ts</h4>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span><span class="nx">Request</span><span class="p">,</span> <span class="nx">Response</span><span class="p">,</span> <span class="nx">Router</span><span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">express</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span><span class="nx">Transaction</span><span class="p">,</span> <span class="nx">TransactionRepository</span><span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">../models/transaction</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">REPOSITORY_TYPES</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">../types</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">inject</span><span class="p">,</span> <span class="nx">injectable</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">inversify</span><span class="dl">"</span><span class="p">;</span>
+
+<span class="p">@</span><span class="nd">injectable</span><span class="p">()</span>
+<span class="k">export</span> <span class="kd">class</span> <span class="nx">TransactionController</span> <span class="p">{</span>
+
+  <span class="k">private</span> <span class="nx">repository</span><span class="p">:</span> <span class="nx">TransactionRepository</span><span class="p">;</span>
+
+  <span class="k">private</span> <span class="nx">router</span><span class="p">:</span> <span class="nx">Router</span> <span class="o">=</span> <span class="nx">Router</span><span class="p">();</span>
+
+  <span class="k">public</span> <span class="kd">constructor</span><span class="p">(@</span><span class="nd">inject</span><span class="p">(</span><span class="nx">REPOSITORY_TYPES</span><span class="p">.</span><span class="nx">Transaction</span><span class="p">)</span> <span class="nx">repository</span><span class="p">:</span> <span class="nx">TransactionRepository</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="k">this</span><span class="p">.</span><span class="nx">repository</span> <span class="o">=</span> <span class="nx">repository</span><span class="p">;</span>
+
+    <span class="k">this</span><span class="p">.</span><span class="nx">router</span><span class="p">.</span><span class="kd">get</span><span class="p">(</span><span class="dl">'</span><span class="s1">/:id</span><span class="dl">'</span><span class="p">,</span> <span class="p">(</span><span class="nx">req</span><span class="p">:</span> <span class="nx">Request</span><span class="p">,</span> <span class="nx">res</span><span class="p">:</span> <span class="nx">Response</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+
+      <span class="kd">let</span> <span class="nx">id</span> <span class="o">=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">id</span><span class="p">;</span>
+      <span class="kd">let</span> <span class="nx">transaction</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">repository</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="nx">x</span> <span class="o">=&gt;</span> <span class="nx">x</span><span class="p">.</span><span class="nx">id</span> <span class="o">==</span> <span class="nx">id</span><span class="p">);</span>
+    
+      <span class="k">if</span> <span class="p">(</span><span class="nx">transaction</span> <span class="o">==</span> <span class="kc">null</span><span class="p">)</span>
+        <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">404</span><span class="p">).</span><span class="nx">send</span><span class="p">();</span>  <span class="c1">// Record not found</span>
+      <span class="k">else</span>
+        <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">200</span><span class="p">).</span><span class="nx">send</span><span class="p">(</span><span class="nx">transaction</span><span class="p">);</span>
+    <span class="p">});</span>
+    
+    <span class="k">this</span><span class="p">.</span><span class="nx">router</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="dl">'</span><span class="s1">/</span><span class="dl">'</span><span class="p">,</span> <span class="p">(</span><span class="nx">req</span><span class="p">:</span> <span class="nx">Request</span><span class="p">,</span> <span class="nx">res</span><span class="p">:</span> <span class="nx">Response</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    
+      <span class="kd">let</span> <span class="na">transaction</span><span class="p">:</span> <span class="nx">Transaction</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="na">id</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="na">type</span><span class="p">:</span> <span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="kd">type</span><span class="p">,</span>
+        <span class="na">date</span><span class="p">:</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">date</span><span class="p">),</span>
+        <span class="na">currency</span><span class="p">:</span> <span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">currency</span><span class="p">,</span>
+        <span class="na">amount</span><span class="p">:</span> <span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">amount</span><span class="p">,</span>
+        <span class="na">source</span><span class="p">:</span> <span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">source</span><span class="p">,</span>
+        <span class="na">description</span><span class="p">:</span> <span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">description</span>
+      <span class="p">};</span>
+    
+      <span class="k">this</span><span class="p">.</span><span class="nx">repository</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">transaction</span><span class="p">);</span>
+    
+      <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">200</span><span class="p">).</span><span class="nx">send</span><span class="p">(</span><span class="nx">transaction</span><span class="p">);</span>
+    
+    <span class="p">});</span>
+    
+    <span class="k">this</span><span class="p">.</span><span class="nx">router</span><span class="p">.</span><span class="nx">put</span><span class="p">(</span><span class="dl">'</span><span class="s1">/:id</span><span class="dl">'</span><span class="p">,</span> <span class="p">(</span><span class="nx">req</span><span class="p">:</span> <span class="nx">Request</span><span class="p">,</span> <span class="nx">res</span><span class="p">:</span> <span class="nx">Response</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    
+      <span class="kd">let</span> <span class="nx">transaction</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">repository</span><span class="p">.</span><span class="nx">update</span><span class="p">({</span>
+        <span class="na">id</span><span class="p">:</span>  <span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span>
+        <span class="na">amount</span><span class="p">:</span>  <span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">amount</span><span class="p">,</span>
+        <span class="na">currency</span><span class="p">:</span>  <span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">currency</span><span class="p">,</span>
+        <span class="na">date</span><span class="p">:</span>  <span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">date</span><span class="p">,</span>
+        <span class="na">description</span><span class="p">:</span>  <span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">description</span><span class="p">,</span>
+        <span class="na">source</span><span class="p">:</span>  <span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">source</span><span class="p">,</span>
+        <span class="na">type</span><span class="p">:</span>  <span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="kd">type</span><span class="p">,</span>
+        <span class="na">category</span><span class="p">:</span>  <span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">category</span>
+      <span class="p">});</span>
+    
+      <span class="k">if</span> <span class="p">(</span><span class="nx">transaction</span> <span class="o">==</span> <span class="kc">null</span><span class="p">)</span> 
+        <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">404</span><span class="p">).</span><span class="nx">send</span><span class="p">();</span>  <span class="c1">// Record not found</span>
+
+      <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">200</span><span class="p">).</span><span class="nx">send</span><span class="p">(</span><span class="nx">transaction</span><span class="p">);</span>
+    
+    <span class="p">});</span>
+    
+    <span class="k">this</span><span class="p">.</span><span class="nx">router</span><span class="p">.</span><span class="k">delete</span><span class="p">(</span><span class="dl">'</span><span class="s1">/:id</span><span class="dl">'</span><span class="p">,</span> <span class="p">(</span><span class="nx">req</span><span class="p">:</span> <span class="nx">Request</span><span class="p">,</span> <span class="nx">res</span><span class="p">:</span> <span class="nx">Response</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    
+      <span class="kd">let</span> <span class="na">id</span><span class="p">:</span> <span class="kr">number</span> <span class="o">=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">id</span><span class="p">;</span>
+    
+      <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">repository</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="nx">x</span> <span class="o">=&gt;</span> <span class="nx">x</span><span class="p">.</span><span class="nx">id</span> <span class="o">==</span> <span class="nx">id</span><span class="p">)</span> <span class="o">==</span> <span class="kc">undefined</span><span class="p">)</span>
+        <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">404</span><span class="p">).</span><span class="nx">send</span><span class="p">();</span>  <span class="c1">// Record not found</span>
+    
+      <span class="k">this</span><span class="p">.</span><span class="nx">repository</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span><span class="nx">x</span> <span class="o">=&gt;</span> <span class="nx">x</span><span class="p">.</span><span class="nx">id</span> <span class="o">!=</span> <span class="nx">id</span><span class="p">);</span>
+      
+      <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">200</span><span class="p">).</span><span class="nx">send</span><span class="p">(</span><span class="dl">'</span><span class="s1">Transaction deleted</span><span class="dl">'</span><span class="p">);</span>
+    
+    <span class="p">});</span>
+  <span class="p">}</span>
+  
+  <span class="k">public</span> <span class="nx">getRouter</span><span class="p">()</span> <span class="p">:</span> <span class="nx">Router</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">router</span><span class="p">;</span>
+  <span class="p">}</span>
+
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="getting-real">Getting Real</h2>
+
+<p>So the next step is to implement the TransactionRepository interface. Using the array from the controller I can create a basic repository. This will allow it to be injected into the design. This design will also allow me to swap out one repository for another without having to change any other code (unless I change my interface design).</p>
+
+<h4 id="srcrepositoriestransactionarrayts">/src/repositories/transactionArray.ts</h4>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span><span class="nx">injectable</span><span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">inversify</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="k">import</span> <span class="p">{</span><span class="nx">Transaction</span><span class="p">,</span> <span class="nx">TransactionRepository</span><span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">../models/transaction</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="p">@</span><span class="nd">injectable</span><span class="p">()</span>
+<span class="k">export</span> <span class="kd">class</span> <span class="nx">TransactionArrayRepository</span> <span class="k">implements</span> <span class="nx">TransactionRepository</span> <span class="p">{</span>
+  <span class="k">private</span> <span class="nx">next_id</span><span class="p">:</span> <span class="kr">number</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+
+  <span class="k">private</span> <span class="nx">transactions</span><span class="p">:</span> <span class="nb">Array</span><span class="o">&lt;</span><span class="nx">Transaction</span><span class="o">&gt;</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span> <span class="na">id</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">DEBIT</span><span class="dl">'</span><span class="p">,</span> <span class="na">date</span><span class="p">:</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="dl">'</span><span class="s1">2018-12-28</span><span class="dl">'</span><span class="p">),</span> <span class="na">currency</span><span class="p">:</span> <span class="dl">'</span><span class="s1">USD</span><span class="dl">'</span><span class="p">,</span> <span class="na">amount</span><span class="p">:</span> <span class="o">-</span><span class="mf">10.00</span><span class="p">,</span> <span class="na">source</span><span class="p">:</span> <span class="dl">'</span><span class="s1">DEBIT_CARD</span><span class="dl">'</span><span class="p">,</span> <span class="na">description</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Soup</span><span class="dl">'</span> <span class="p">},</span>
+    <span class="p">{</span> <span class="na">id</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">DEBIT</span><span class="dl">'</span><span class="p">,</span> <span class="na">date</span><span class="p">:</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="dl">'</span><span class="s1">2018-12-28</span><span class="dl">'</span><span class="p">),</span> <span class="na">currency</span><span class="p">:</span> <span class="dl">'</span><span class="s1">USD</span><span class="dl">'</span><span class="p">,</span> <span class="na">amount</span><span class="p">:</span> <span class="o">-</span><span class="mf">15.00</span><span class="p">,</span> <span class="na">source</span><span class="p">:</span> <span class="dl">'</span><span class="s1">DEBIT_CARD</span><span class="dl">'</span><span class="p">,</span> <span class="na">description</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Dessert</span><span class="dl">'</span> <span class="p">},</span>
+    <span class="p">{</span> <span class="na">id</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">DEBIT</span><span class="dl">'</span><span class="p">,</span> <span class="na">date</span><span class="p">:</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="dl">'</span><span class="s1">2018-12-28</span><span class="dl">'</span><span class="p">),</span> <span class="na">currency</span><span class="p">:</span> <span class="dl">'</span><span class="s1">USD</span><span class="dl">'</span><span class="p">,</span> <span class="na">amount</span><span class="p">:</span> <span class="o">-</span><span class="mf">20.00</span><span class="p">,</span> <span class="na">source</span><span class="p">:</span> <span class="dl">'</span><span class="s1">DEBIT_CARD</span><span class="dl">'</span><span class="p">,</span> <span class="na">description</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Drinks</span><span class="dl">'</span> <span class="p">},</span>
+    <span class="p">{</span> <span class="na">id</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span><span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">DEBIT</span><span class="dl">'</span><span class="p">,</span><span class="na">date</span><span class="p">:</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="dl">'</span><span class="s1">2018-12-28</span><span class="dl">'</span><span class="p">),</span><span class="na">currency</span><span class="p">:</span> <span class="dl">'</span><span class="s1">USD</span><span class="dl">'</span><span class="p">,</span><span class="na">amount</span><span class="p">:</span> <span class="o">-</span><span class="mf">5.00</span><span class="p">,</span><span class="na">source</span><span class="p">:</span> <span class="dl">'</span><span class="s1">DEBIT_CARD</span><span class="dl">'</span><span class="p">,</span><span class="na">description</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Tip</span><span class="dl">'</span> <span class="p">}</span>
+  <span class="p">];</span>
+
+  <span class="k">public</span> <span class="nx">find</span><span class="p">(</span><span class="nx">evaluator</span><span class="p">:</span> <span class="p">(</span><span class="nx">Transaction</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">boolean</span><span class="p">):</span> <span class="nx">Transaction</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">transactions</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="nx">evaluator</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="k">public</span> <span class="nx">findAll</span><span class="p">(</span><span class="nx">evaluator</span><span class="p">:</span> <span class="p">(</span><span class="nx">Transaction</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">boolean</span><span class="p">):</span> <span class="nb">Array</span><span class="o">&lt;</span><span class="nx">Transaction</span><span class="o">&gt;</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">evaluator</span> <span class="o">==</span> <span class="kc">null</span><span class="p">)</span> <span class="k">return</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">assign</span><span class="p">([],</span> <span class="k">this</span><span class="p">.</span><span class="nx">transactions</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">transactions</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="nx">evaluator</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="k">public</span> <span class="nx">add</span><span class="p">(</span><span class="nx">record</span><span class="p">:</span> <span class="nx">Transaction</span><span class="p">):</span> <span class="nx">Transaction</span> <span class="p">{</span>
+    <span class="kd">let</span> <span class="nx">entry</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">assign</span><span class="p">({},</span> <span class="nx">record</span><span class="p">);</span>
+    <span class="nx">entry</span><span class="p">.</span><span class="nx">id</span> <span class="o">=</span> <span class="o">++</span><span class="k">this</span><span class="p">.</span><span class="nx">next_id</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">transactions</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">entry</span><span class="p">);</span>
+    <span class="k">return</span> <span class="nx">entry</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">public</span> <span class="nx">update</span><span class="p">(</span><span class="nx">record</span><span class="p">:</span> <span class="nx">Transaction</span><span class="p">):</span> <span class="nx">Transaction</span> <span class="p">{</span>
+    <span class="kd">let</span> <span class="nx">entry</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="nx">x</span> <span class="o">=&gt;</span> <span class="nx">x</span><span class="p">.</span><span class="nx">id</span> <span class="o">==</span> <span class="nx">record</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">entry</span> <span class="o">==</span> <span class="kc">null</span><span class="p">)</span> <span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
+    <span class="kd">let</span> <span class="nx">updatedEntry</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">assign</span><span class="p">(</span><span class="nx">entry</span><span class="p">,</span> <span class="nx">record</span><span class="p">);</span>
+    <span class="k">return</span> <span class="nx">updatedEntry</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">public</span> <span class="nx">remove</span><span class="p">(</span><span class="nx">evaluator</span><span class="p">:</span> <span class="p">(</span><span class="nx">Transaction</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">boolean</span><span class="p">):</span> <span class="nx">Transaction</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">transactions</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">transactions</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="nx">evaluator</span><span class="p">);</span>
+    <span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="time-to-re-route-things">Time to Re-Route things</h2>
+
+<p>With the changes to the TransactionController I need to tweak the route mapping. I also need to tweak the design to make it inject-able. It’s not fully in line with SOLID but its a step in the right direction.</p>
+
+<h4 id="srcroutests">/src/routes.ts</h4>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span><span class="nx">RootController</span><span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">./controllers/root</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span><span class="nx">TransactionController</span><span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">./controllers/transaction</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">injectable</span><span class="p">,</span> <span class="nx">inject</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">inversify</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">CONTROLLERS</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">./types</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="p">@</span><span class="nd">injectable</span><span class="p">()</span> 
+<span class="k">export</span> <span class="kd">class</span> <span class="nx">Mapper</span> <span class="p">{</span>
+
+  <span class="k">private</span> <span class="nx">_TransactionController</span><span class="p">:</span> <span class="nx">TransactionController</span><span class="p">;</span>
+
+  <span class="k">public</span> <span class="kd">constructor</span><span class="p">(@</span><span class="nd">inject</span><span class="p">(</span><span class="nx">CONTROLLERS</span><span class="p">.</span><span class="nx">Transaction</span><span class="p">)</span> <span class="nx">transactionController</span><span class="p">:</span> <span class="nx">TransactionController</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">_TransactionController</span> <span class="o">=</span> <span class="nx">transactionController</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">public</span> <span class="nx">addRoutes</span><span class="p">(</span><span class="nx">app</span><span class="p">):</span> <span class="k">void</span> <span class="p">{</span>
+    <span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="dl">'</span><span class="s1">/</span><span class="dl">'</span><span class="p">,</span> <span class="nx">RootController</span><span class="p">);</span>
+    <span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="dl">'</span><span class="s1">/transaction</span><span class="dl">'</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">_TransactionController</span><span class="p">.</span><span class="nx">getRouter</span><span class="p">());</span>
+  <span class="p">}</span>
+
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="binding-things-together">Binding things together</h2>
+
+<p>Dependency injection relies on mapping the types to the class implementation. This is what allows the ability of implementing say a new repository without having to update every its needed, instead I just update the mapping in a single place.</p>
+
+<h4 id="srcinversifyconfigts">/src/inversify.config.ts</h4>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="dl">"</span><span class="s2">reflect-metadata</span><span class="dl">"</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span><span class="nx">Container</span><span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">inversify</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span><span class="nx">TransactionController</span><span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">./controllers/transaction</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span><span class="nx">TransactionRepository</span><span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">./models/transaction</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span><span class="nx">TransactionArrayRepository</span><span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">./repositories/transactionArray</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span><span class="nx">Mapper</span><span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">./routes</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">CONTROLLERS</span><span class="p">,</span> <span class="nx">SINGLETONS</span><span class="p">,</span> <span class="nx">REPOSITORY_TYPES</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">./types</span><span class="dl">"</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">container</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Container</span><span class="p">();</span>
+<span class="nx">container</span><span class="p">.</span><span class="nx">bind</span><span class="o">&lt;</span><span class="nx">TransactionController</span><span class="o">&gt;</span><span class="p">(</span><span class="nx">CONTROLLERS</span><span class="p">.</span><span class="nx">Transaction</span><span class="p">).</span><span class="nx">to</span><span class="p">(</span><span class="nx">TransactionController</span><span class="p">);</span>
+<span class="nx">container</span><span class="p">.</span><span class="nx">bind</span><span class="o">&lt;</span><span class="nx">Mapper</span><span class="o">&gt;</span><span class="p">(</span><span class="nx">SINGLETONS</span><span class="p">.</span><span class="nx">Routing</span><span class="p">).</span><span class="nx">to</span><span class="p">(</span><span class="nx">Mapper</span><span class="p">);</span>
+<span class="nx">container</span><span class="p">.</span><span class="nx">bind</span><span class="o">&lt;</span><span class="nx">TransactionRepository</span><span class="o">&gt;</span><span class="p">(</span><span class="nx">REPOSITORY_TYPES</span><span class="p">.</span><span class="nx">Transaction</span><span class="p">).</span><span class="nx">to</span><span class="p">(</span><span class="nx">TransactionArrayRepository</span><span class="p">);</span>
+
+<span class="k">export</span> <span class="p">{</span><span class="nx">container</span><span class="p">};</span>
+</code></pre></div></div>
+
+<h2 id="the-final-piece">The final piece</h2>
+
+<p>Time to wrap it up all together in the main entry point where the single instance of inversify config gets created that is used and to ensure the mappings are performed.</p>
+
+<h4 id="srcappts">/src/app.ts</h4>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="o">*</span> <span class="k">as</span> <span class="nx">express</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">express</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">Mapper</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">./routes</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="o">*</span> <span class="k">as</span> <span class="nx">bodyParser</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">body-parser</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">SINGLETONS</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">./types</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">container</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">./inversify.config</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nx">App</span> <span class="p">{</span>
+
+    <span class="k">public</span> <span class="nx">app</span><span class="p">:</span> <span class="nx">express</span><span class="p">.</span><span class="nx">Application</span><span class="p">;</span>
+    <span class="k">private</span> <span class="nx">RouteMapper</span><span class="p">:</span> <span class="nx">Mapper</span> <span class="o">=</span>  <span class="nx">container</span><span class="p">.</span><span class="kd">get</span><span class="o">&lt;</span><span class="nx">Mapper</span><span class="o">&gt;</span><span class="p">(</span><span class="nx">SINGLETONS</span><span class="p">.</span><span class="nx">Routing</span><span class="p">);</span>
+
+    <span class="kd">constructor</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">app</span> <span class="o">=</span> <span class="nx">express</span><span class="p">();</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">config</span><span class="p">();</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">RouteMapper</span><span class="p">.</span><span class="nx">addRoutes</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">app</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">private</span> <span class="nx">config</span><span class="p">():</span> <span class="k">void</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">bodyParser</span><span class="p">.</span><span class="nx">json</span><span class="p">());</span>
+    <span class="p">}</span>
+
+<span class="p">}</span>
+
+<span class="k">export</span> <span class="k">default</span> <span class="k">new</span> <span class="nx">App</span><span class="p">().</span><span class="nx">app</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>With those changes, not much appears to have changed on the surface. In the <a href="/2020/02/29/my-web-app-journey-data-store/">next chapter</a> I will write a new repository class that works with MongoDB and change out the old one.</p>
+
+<h2 id="contributing-research-material">Contributing Research Material</h2>
+
+<p><span style="font-size:12px;"><a rel="noreferrer noopener" href="https://hackernoon.com/generic-repository-with-typescript-and-node-js-731c10a1b98e" target="_blank">Wendel,  Erik.  Patterns — Generic Repository with Typescript and Node.js. Web Article. 20 March 2018.</a></span></p>
+
+<p><span style="font-size:12px;"><a rel="noreferrer noopener" href="https://dev.to/remojansen/implementing-the-onion-architecture-in-nodejs-with-typescript-and-inversifyjs-10ad" target="_blank">Jansen, Remo H. Implementing SOLID and the onion architecture in Node.js with TypeScript and InversifyJS. Web Article. 13 April 2018.</a></span></p>
+
+<p><span style="font-size:12px;"><a href="https://itnext.io/typescript-dependency-injection-setting-up-inversifyjs-ioc-for-a-ts-project-f25d48799d70" target="_blank" rel="noreferrer noopener">Abrickis, Andres. Typescript dependency injection: setting up InversifyJS IoC for a TS project. Web Articel. 9 July 2018.</a></span></p>
+
+<p><span style="font-size:12px;"><a rel="noreferrer noopener" href="https://www.youtube.com/watch?time_continue=669&amp;v=_lwCVE_XgqI" target="_blank">Taylor, Jason. Clean Architecture with ASP.NET Core 2.1. YouTube. 18 October 2018.</a></span></p>
+
+
+  </div><a class="u-url" href="/2019/01/27/my-web-journey-data-repository/" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">My Perspective of the world</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">My Perspective of the world</li><li><a class="u-email" href="mailto:xiltch@gmail.com">xiltch@gmail.com</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/xiltch"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">xiltch</span></a></li><li><a href="https://www.twitter.com/xiltch"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">xiltch</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>The chronicles of a geek, author of code and connoisseur of fine electronics.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>My Web App Journey - Buildkit Control | My Perspective of the world</title>
+<meta name="generator" content="Jekyll v4.2.0" />
+<meta property="og:title" content="My Web App Journey - Buildkit Control" />
+<meta name="author" content="Jonathan Tweedle" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="The chronicles of a geek, author of code and connoisseur of fine electronics." />
+<meta property="og:description" content="The chronicles of a geek, author of code and connoisseur of fine electronics." />
+<link rel="canonical" href="https://xiltch.github.io/2021/02/20/my-web-app-journey-buildkit-control/" />
+<meta property="og:url" content="https://xiltch.github.io/2021/02/20/my-web-app-journey-buildkit-control/" />
+<meta property="og:site_name" content="My Perspective of the world" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-02-20T00:00:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="My Web App Journey - Buildkit Control" />
+<script type="application/ld+json">
+{"description":"The chronicles of a geek, author of code and connoisseur of fine electronics.","headline":"My Web App Journey - Buildkit Control","url":"https://xiltch.github.io/2021/02/20/my-web-app-journey-buildkit-control/","datePublished":"2021-02-20T00:00:00+00:00","dateModified":"2021-02-20T00:00:00+00:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://xiltch.github.io/2021/02/20/my-web-app-journey-buildkit-control/"},"author":{"@type":"Person","name":"Jonathan Tweedle"},"@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="https://xiltch.github.io/feed.xml" title="My Perspective of the world" /><!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XPPPBC54MV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-XPPPBC54MV');
+</script></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">My Perspective of the world</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a><a class="page-link" href="/links/">Links</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">My Web App Journey - Buildkit Control</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2021-02-20T00:00:00+00:00" itemprop="datePublished">Feb 20, 2021
+      </time>• <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span class="p-author h-card" itemprop="name">Jonathan Tweedle</span></span></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p><img src="/assets/img/structure-sky-building-construction-factory-industry-1073943-pxhere.com.jpg" alt="banner" /></p>
+
+<p>One of the steps when trying to <a href="/2021/02/07/my-web-app-journey-mind-the-gap/">create my own air gapped solution</a> for building and posting functions to my local OpenFaaS using my own private Docker repository. One of the challenges with that setup was my decision against using <a href="https://letsencrypt.org/">Lets Encrypt</a> and instead to use <a href="https://deliciousbrains.com/ssl-certificate-authority-for-local-https-development/">my own CA</a> that I created myself. This became a problem when using the OpenFaaS cli to perform the build step from my workstation.</p>
+
+<p>Basically it was unable to perform the final step of the process, which was to publish the now built image over to my private Docker Registry. The reason was simple, it did not trust my registry which was using a certificate signed by an ‘Unknown Certificate Authority’.</p>
+
+<p>The solution is to inject my CA certificate into the <a href="https://docs.docker.com/develop/develop-images/build_enhancements/">buildkit</a> container which is used to build and publish the OpenFaaS images. By injecting my own CA cert, it would then trust the certificate of my local Docker Registry.</p>
+
+<p>If you already tried to and failed to publish, you can skip to <a href="#updating-the-container">Updating the Container</a>.</p>
+
+<h3 id="starting-fresh">Starting Fresh</h3>
+
+<p>For my use case I required a buildkit that targets the ARM architecture. I create a build instance and set it as the current builder instance.</p>
+
+<blockquote>
+  <p>docker buildx create –name multiarch –node multiarch –platform linux/arm64,linux/arm/v8,linux/arm/v7,linux/arm/v6 –use</p>
+</blockquote>
+
+<p>After running the command, it simply prints out the name of the builder instance. You can verify this by listing out the build instances.</p>
+
+<blockquote>
+  <p>docker buildx ls</p>
+</blockquote>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NAME/NODE   DRIVER/ENDPOINT             STATUS  PLATFORMS
+multiarch * docker-container
+  multiarch unix:///var/run/docker.sock running linux/arm64*, linux/arm/v8*, linux/arm/v7*, linux/arm/v6*, linux/amd64, linux/riscv64, linux/ppc64le, linux/s390x, linux/386
+default     docker
+  default   default                     running linux/amd64, linux/arm64, linux/riscv64, linux/ppc64le, linux/s390x, linux/386, linux/arm/v7, linux/arm/v6
+</code></pre></div></div>
+
+<p>Now we need to import our CA certificate into the builder instance but because we have not built anything yet, we do not have a destination for the certificate. The build instance works by using a docker container instance. The quickest way to create one is just try and use the build instance to build something. This is easiest done in an empty directory.</p>
+
+<blockquote>
+  <p>docker buildx build .</p>
+</blockquote>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>WARN[0000] No output specified for docker-container driver. Build result will only remain in the build cache. To push result image into registry use --push or to load image into docker use --load
+[+] Building 2.4s (3/3) FINISHED
+ =&gt; [internal] booting buildkit                                                                                                                                                                             2.1s
+ =&gt; =&gt; pulling image moby/buildkit:buildx-stable-1                                                                                                                                                          1.5s
+ =&gt; =&gt; creating container buildx_buildkit_multiarch                                                                                                                                                         0.6s
+ =&gt; [internal] load build definition from Dockerfile                                                                                                                                                        0.1s
+ =&gt; =&gt; transferring dockerfile: 2B                                                                                                                                                                          0.0s
+ =&gt; [internal] load .dockerignore                                                                                                                                                                           0.2s
+ =&gt; =&gt; transferring context: 2B                                                                                                                                                                             0.0s
+error: failed to solve: rpc error: code = Unknown desc = failed to solve with frontend dockerfile.v0: failed to read dockerfile: open /tmp/buildkit-mount138360677/Dockerfile: no such file or directory
+</code></pre></div></div>
+
+<h3 id="updating-the-container">Updating the Container</h3>
+
+<p>Once the build container is created, list the docker containers in order to get the container ID.</p>
+
+<blockquote>
+  <p>docker container ps</p>
+</blockquote>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CONTAINER ID   IMAGE                                      COMMAND                  CREATED              STATUS                     PORTS                           NAMES
+c28e2bcc8758   moby/buildkit:buildx-stable-1              "buildkitd"              About a minute ago   Up About a minute                                          buildx_buildkit_multiarch
+</code></pre></div></div>
+
+<p>With the Container ID, we can easily copy a local file from workstation into the container. This is great because we can take our CA certificate and copy it over.</p>
+
+<blockquote>
+  <p>docker cp homeCA.crt c28e2bcc8758:/usr/local/share/ca-certificates</p>
+</blockquote>
+
+<p>This wont give you any output, and its not like your cert will automatically be used by the build instance. You need to manually trigger the process for updating the registered CA certificates.</p>
+
+<blockquote>
+  <p>docker exec c28e2bcc8758 update-ca-certificates</p>
+</blockquote>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>WARNING: ca-certificates.crt does not contain exactly one certificate or CRL: skipping
+</code></pre></div></div>
+
+<h3 id="all-done">All Done</h3>
+
+<p>You might get a warning after updating the ca certs command but this should be ok. You should be ready to start using the buildkit, for example, publish your OpenFaaS functions before deploying to a local OpenFaaS micro server.</p>
+
+<p><br /></p>
+
+<hr />
+<h3 id="page-resources">Page Resources</h3>
+
+<p><a href="https://pxhere.com/en/photo/1073943">Banner Image - pxhere.com - 1073943 </a></p>
+
+<p><a href="https://deliciousbrains.com/ssl-certificate-authority-for-local-https-development/">How to Create Your Own SSL Certificate Authority for Local HTTPS Development</a> - Brad Touesnard (2020-06-23)</p>
+
+<p><a href="https://medium.com/titansoft-engineering/docker-build-cache-sharing-on-multi-hosts-with-buildkit-and-buildx-eb8f7005918e">Docker build cache sharing on multi-hosts with BuildKit and buildx</a> - Jiang Huan (2019-07-10)</p>
+
+
+  </div><a class="u-url" href="/2021/02/20/my-web-app-journey-buildkit-control/" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">My Perspective of the world</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">My Perspective of the world</li><li><a class="u-email" href="mailto:xiltch@gmail.com">xiltch@gmail.com</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/xiltch"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">xiltch</span></a></li><li><a href="https://www.twitter.com/xiltch"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">xiltch</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>The chronicles of a geek, author of code and connoisseur of fine electronics.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
