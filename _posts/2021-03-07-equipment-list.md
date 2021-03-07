@@ -19,22 +19,22 @@ In the [Previous Post][prev_post] I spoke about the changes to my desk setup to 
 
 So here is a quick summary of my personal rig. It is a little bit dated, but still gets the job done.
 
-Monitor: [Samsung G9 Odyssey 49" Dual-QHD 32:9 Ultrawide][monitor]
-Graphics Card: [EVGA GeForce GTX 1080 SC2 GAMING iCX][graphics]
-CPU: [Intel Core i7 7700k processor][cpu]
-Motherboard: [ASUS TUF Z270 Mark 1][motherboard]
-Memory: [Team T-Force DARK 16GB (2 x 8GB) 288-Pin DDR4 SDRAM DDR4 3000][memory]
-Storage: [Samsung 970 EVO NVMe M.2 1TB SSD][nvme]
-Storage: [Samsung 840 EVO SATA III 2.5 inch 250 GB SSD][ssd]
-Storage: [Seagate Barracuda 1TB 7200 RPM SATA 6gbs][hdd]
-PSU: [Seasonic FOCUS Plus 550 Platinum SSR-550PX 550W 80+ Platinum ATX12V & EPS12V Full Modular 120mm][psu]
-Case: Huntkey Midi Tower Case
-Keyboard: [Coolermaster Masterkeys Pro S (White) Cherry MX Brown][keyboard]
-Mouse: [Roccat Kone XTD Laser Gaming Mouse][mouse]
-Desk Pad: [HyperX Fury Gaming Pad][deskpad1] and [Reflex Lab Silky Smooth 5mm 36 x 12][deskpad2]
-Headset: [HyperX Cloud II Gaming Headset][headset]
+* Monitor: [Samsung G9 Odyssey 49" Dual-QHD 32:9 Ultrawide][monitor]
+* Graphics Card: [EVGA GeForce GTX 1080 SC2 GAMING iCX][graphics]
+* CPU: [Intel Core i7 7700k processor][cpu]
+* Motherboard: [ASUS TUF Z270 Mark 1][motherboard]
+* Memory: [Team T-Force DARK 16GB (2 x 8GB) 288-Pin DDR4 SDRAM DDR4 3000][memory]
+* Storage: [Samsung 970 EVO NVMe M.2 1TB SSD][nvme]
+* Storage: [Samsung 840 EVO SATA III 2.5 inch 250 GB SSD][ssd]
+* Storage: [Seagate Barracuda 1TB 7200 RPM SATA 6gbs][hdd]
+* PSU: [Seasonic FOCUS Plus 550 Platinum SSR-550PX 550W 80+ Platinum ATX12V & EPS12V Full Modular 120mm][psu]
+* Case: Huntkey Midi Tower Case
+* Keyboard: [Coolermaster Masterkeys Pro S (White) Cherry MX Brown][keyboard]
+* Mouse: [Roccat Kone XTD Laser Gaming Mouse][mouse]
+* Desk Pad: [HyperX Fury Gaming Pad][deskpad1] and [Reflex Lab Silky Smooth 5mm 36 x 12][deskpad2]
+* Headset: [HyperX Cloud II Gaming Headset][headset]
 
-I also bought a simple [USB Switch] that allows me to switch the input between my Personal Gaming Rig and my work laptop. This really helps save time from constantly having to disconnect and switch cables around. 
+I also bought a simple [USB Switch][usbswitch] that allows me to switch the input between my Personal Gaming Rig and my work laptop. This really helps save time from constantly having to disconnect and switch cables around. 
 
 [banner]: /assets/2021/02/20210227A.jpg
 [prev_post]: {% post_url 2021-02-27-desk-setup %}
